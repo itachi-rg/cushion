@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
-import './css/bootstrap.css';
+import './bootstrap.css';
 
 class App extends Component {
   constructor(props) {
@@ -17,9 +17,10 @@ class App extends Component {
   }
 
   handleWordClick(val) {
+    //alert(val)
     console.log('clicked '+val)
-    var regexp = new RegExp(val,"ig");
-    var highlighted = this.state.origresponse.replace(regexp,'<span class="highlight"><b>'+val+'</b></span>')
+    var re = new RegExp('\\b'+val+'\\b',"ig");
+    var highlighted = this.state.origresponse.replace(re,'<span class="highlight"><b>'+val+'</b></span>')
     this.setState({response:highlighted})
   }
 
@@ -40,9 +41,13 @@ class App extends Component {
     this.setState({response:newtext})
     this.setState({origresponse:newtext})
 
-    var words = newtext.match(/\b(\w+)\b/g);
+
+    //document.querySelector("pre").innerHTML = JSON.stringify(data, null, 2);
+    //return data;
+
+    var wordsArray = textdata.split(/[^a-zA-Z]+/);
     var wordsMap = {};
-    words.forEach(function (key) {
+    wordsArray.forEach(function (key) {
       key = String(key).toUpperCase();
       if (wordsMap.hasOwnProperty(key)) {
         wordsMap[key]++;
@@ -58,7 +63,6 @@ class App extends Component {
         total: wordsMap[key]
       };
     });
-
     finalWordsArray.sort(function (a, b) {
       return b.total - a.total;
     });
@@ -72,36 +76,46 @@ class App extends Component {
     }
 
     this.setState({freq:listview})
-    })
-    .catch(e => {
-      console.log("error" + e);
-      return e;
-    });
+
+
+
+  })
+  .catch(e => {
+    console.log("error" + e);
+    this.setState({freq:[]})
+    return e;
+  });
+    //console.log(val);
+
+    //console.log(data)
     event.preventDefault();
   }
-  
-  render() {
+render() {
     return (
       <div className="App">
+
         <header className="App-header">
-          <h1 className="App-title">Cushion test</h1>
+          <h1 className="App-title">Cushion Test</h1>
         </header>
+
         <br/>
         <div className="container">
-          <form onSubmit={this.handleSubmit}>
-            <label>
-              Enter URL :
-              <input type="text" value={this.state.value} onChange={this.handleChange} />
-            </label>
-            <p>{this.state.value}</p>
-            <input type="submit" value="Submit" />
-          </form>
-          <div className="Textview container-fluid pages_container">
-          <p dangerouslySetInnerHTML={{__html: this.state.response}} />
-        </div>
-        <table class="table table-dark">{this.state.freq}</table>
-        </div>
+        <form class="form-group" onSubmit={this.handleSubmit}>
+        <label >
+          Enter URL :
+          <input class="form-control" type="text" value={this.state.value} onChange={this.handleChange} />
+        </label>
+        <p>{this.state.value}</p>
+        <input class="btn btn-info" type="submit" value="Submit" />
+      </form>
+      <div class="card">
+      <div class="card-body" dangerouslySetInnerHTML={{__html: this.state.response}} ></div>
       </div>
+      <hr/>
+      <table class="table table-dark">{this.state.freq}</table>
+      </div>
+      </div>
+
     );
   }
 }
