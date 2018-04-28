@@ -40,7 +40,7 @@ class App extends Component {
     this.setState({response:newtext})
     this.setState({origresponse:newtext})
 
-    var words = textdata.split(/[^a-zA-Z]+/);
+    var words = newtext.match(/\b(\w+)\b/g);
     var wordsMap = {};
     words.forEach(function (key) {
       key = String(key).toUpperCase();
