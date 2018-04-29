@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import './bootstrap.css';
+import ReactDOM from 'react-dom'
+import $ from 'jquery';
 
 class App extends Component {
   constructor(props) {
@@ -20,7 +22,9 @@ class App extends Component {
     //alert(val)
     console.log('clicked '+val)
     var re = new RegExp('\\b'+val+'\\b',"ig");
-    var highlighted = this.state.origresponse.replace(re,'<span class="highlight"><b>'+val+'</b></span>')
+    var highlighted = this.state.origresponse.replace(re,'<span class="badge badge-success"><b>'+val+'</b></span>')
+    //ReactDOM.findDOMNode(this).scrollTop = 0
+    window.scrollTo(0, 0)
     this.setState({response:highlighted})
   }
 
@@ -30,9 +34,10 @@ class App extends Component {
     fetch(proxyUrl + targetUrl)
     .then(blob => blob.text())
     .then(data => {
-      var el = document.createElement('html');
+      var el = document.createElement('html');i
       el.innerHTML = data;
-      var textdata = (el.getElementsByTagName('body'))[0].innerText; // Live NodeList of your anchor elements
+      var textdata = $((el.getElementsByTagName('body'))[0]).text();
+      //var textdata = (el.getElementsByTagName('body'))[0].innerText; // Live NodeList of your anchor elements
       var ell = document.createElement('div');
       ell.innerHTML = textdata
       var newtext = ell.innerText
@@ -63,6 +68,7 @@ class App extends Component {
         total: wordsMap[key]
       };
     });
+
     finalWordsArray.sort(function (a, b) {
       return b.total - a.total;
     });
@@ -90,10 +96,13 @@ class App extends Component {
     //console.log(data)
     event.preventDefault();
   }
-render() {
+
+
+
+  render() {
     return (
       <div className="App">
-
+      
         <header className="App-header">
           <h1 className="App-title">Cushion Test</h1>
         </header>
@@ -122,3 +131,4 @@ render() {
 
 
 export default App;
+

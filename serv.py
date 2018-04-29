@@ -1,8 +1,8 @@
-rom flask import Flask
+from flask import Flask
 from flask import request
 import ssl
 import base64
-import urllib
+import urllib 
 from flask import send_from_directory
 import os
 from time import gmtime, strftime
