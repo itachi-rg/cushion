@@ -29,28 +29,27 @@ class App extends Component {
   }
 
   handleSubmit(event) {
+    var baseUrl = 'proxyrequest?p='
     var proxyUrl = 'https://cryptic-headland-94862.herokuapp.com/',
     targetUrl = this.state.value
-    fetch(proxyUrl + targetUrl)
+    var urltofetch = baseUrl+proxyUrl+targetUrl
+    fetch(urltofetch)
     .then(blob => blob.text())
     .then(data => {
-      var el = document.createElement('html');i
-      el.innerHTML = data;
-      var textdata = $((el.getElementsByTagName('body'))[0]).text();
-      //var textdata = (el.getElementsByTagName('body'))[0].innerText; // Live NodeList of your anchor elements
-      var ell = document.createElement('div');
-      ell.innerHTML = textdata
-      var newtext = ell.innerText
 
-    console.log("data" + textdata);
-    this.setState({response:newtext})
-    this.setState({origresponse:newtext})
+      if(data=="ERROR_FETCH") {
+        this.setState({response:"Please Enter A Valid URL"})
+        this.setState({freq:listview})
+      } else {
+      
+    this.setState({response:data})
+    this.setState({origresponse:data})
 
 
     //document.querySelector("pre").innerHTML = JSON.stringify(data, null, 2);
     //return data;
 
-    var wordsArray = textdata.split(/[^a-zA-Z]+/);
+    var wordsArray = data.split(/[^a-zA-Z]+/);
     var wordsMap = {};
     wordsArray.forEach(function (key) {
       key = String(key).toUpperCase();
@@ -82,6 +81,7 @@ class App extends Component {
     }
 
     this.setState({freq:listview})
+  }
 
 
 
