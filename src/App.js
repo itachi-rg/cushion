@@ -19,11 +19,9 @@ class App extends Component {
   }
 
   handleWordClick(val) {
-    //alert(val)
     console.log('clicked '+val)
     var re = new RegExp('\\b'+val+'\\b',"ig");
     var highlighted = this.state.origresponse.replace(re,'<span class="badge badge-success"><b>'+val+'</b></span>')
-    //ReactDOM.findDOMNode(this).scrollTop = 0
     window.scrollTo(0, 0)
     this.setState({response:highlighted})
   }
@@ -36,64 +34,53 @@ class App extends Component {
     fetch(urltofetch)
     .then(blob => blob.text())
     .then(data => {
-
       if(data=="ERROR_FETCH") {
         this.setState({response:"Please Enter A Valid URL"})
         this.setState({freq:listview})
       } else {
       
-    this.setState({response:data})
-    this.setState({origresponse:data})
+        this.setState({response:data})
+        this.setState({origresponse:data})
 
+        var wordsArray = data.split(/[^a-zA-Z]+/);
+        var wordsMap = {};
+        wordsArray.forEach(function (key) {
+          key = String(key).toUpperCase();
+          if (wordsMap.hasOwnProperty(key)) {
+            wordsMap[key]++;
+          } else {
+            wordsMap[key] = 1;
+          }
+        });
 
-    //document.querySelector("pre").innerHTML = JSON.stringify(data, null, 2);
-    //return data;
+        var finalWordsArray = [];
+        finalWordsArray = Object.keys(wordsMap).map(function (key) {
+          return {
+            name: key,
+            total: wordsMap[key]
+          };
+        });
 
-    var wordsArray = data.split(/[^a-zA-Z]+/);
-    var wordsMap = {};
-    wordsArray.forEach(function (key) {
-      key = String(key).toUpperCase();
-      if (wordsMap.hasOwnProperty(key)) {
-        wordsMap[key]++;
-      } else {
-        wordsMap[key] = 1;
+        finalWordsArray.sort(function (a, b) {
+          return b.total - a.total;
+        });
+
+        var listview = []
+        for (var i = 0; i < 10; i++) {
+          var word = finalWordsArray[i].name
+          var count = finalWordsArray[i].total
+
+          listview.push(<tr onClick={this.handleWordClick.bind(this,word)}><td>{word}</td><td>{count}</td></tr>)
+        }
+
+        this.setState({freq:listview})
       }
+    })
+    .catch(e => {
+      console.log("Caught error" + e);
+      this.setState({freq:[]})
+      return e;
     });
-
-    var finalWordsArray = [];
-    finalWordsArray = Object.keys(wordsMap).map(function (key) {
-      return {
-        name: key,
-        total: wordsMap[key]
-      };
-    });
-
-    finalWordsArray.sort(function (a, b) {
-      return b.total - a.total;
-    });
-
-    var listview = []
-    for (var i = 0; i < 10; i++) {
-      var word = finalWordsArray[i].name
-      var count = finalWordsArray[i].total
-
-      listview.push(<tr onClick={this.handleWordClick.bind(this,word)}><td>{word}</td><td>{count}</td></tr>)
-    }
-
-    this.setState({freq:listview})
-  }
-
-
-
-  })
-  .catch(e => {
-    console.log("error" + e);
-    this.setState({freq:[]})
-    return e;
-  });
-    //console.log(val);
-
-    //console.log(data)
     event.preventDefault();
   }
 
@@ -102,11 +89,9 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      
         <header className="App-header">
           <h1 className="App-title">Cushion Test</h1>
         </header>
-
         <br/>
         <div className="container">
         <form class="form-group" onSubmit={this.handleSubmit}>
