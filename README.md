@@ -55,9 +55,6 @@ chmod 777 Miniconda3-latest-Linux-x86_64.sh
 
 `pip install flask-cors`
 
-## Clone the captcha_server from github
-
-` `
 
 ## Generate privateKey.key and cert.crt
 
@@ -69,7 +66,7 @@ But this will ask for passphrase everytime the server is launched. Remove the pa
 
 ## Run server
 ```
-python server.py
+python serv.py
 
 * Running on http://127.0.0.1:5000/ (Press CTRL+C to quit)
 Ensure that it is running on '0.0.0.0' to be visible to external network
@@ -104,6 +101,6 @@ unset SSH_ASKPASS
 
 ## Finally run the server in the background
 ```
-nohup python server.py &
+nohup python serv.py &
 ```
 
